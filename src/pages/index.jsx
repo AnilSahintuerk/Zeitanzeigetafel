@@ -3,10 +3,13 @@ import { useState, useEffect, useRef } from "react";
 
 const Home = () => {
   const [timer, setTimer] = useState(0);
-  const [isActive, setIsActive] = useState(false);
+  // const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [halbzeit, setHalbzeit] = useState("1");
+  const [isCountDown, setIsCountDown] = useState(true);
+
   const countRef = useRef(null);
+  const timerInputRef = useRef(null);
 
   const formatTime = () => {
     const getSeconds = `0${timer % 60}`.slice(-2);
@@ -18,11 +21,31 @@ const Home = () => {
   };
 
   const handleStart = () => {
-    setIsActive(true);
+    // setIsActive(true);
     setIsPaused(true);
+
     countRef.current = setInterval(() => {
-      setTimer((timer) => timer + 1);
+      if (isCountDown) {
+        if (timer === 0) {
+          return;
+        }
+        setTimer((timer) => timer - 1);
+      } else {
+        setTimer((timer) => timer + 1);
+      }
     }, 1000);
+  };
+
+  const handleTimerInput = (e) => {
+    if (!e.target.value) {
+      setTimer(0);
+    } else {
+      const timeString = e.target.value.toString();
+      const timeArray = timeString.split(".");
+      const minutes = parseInt(timeArray[0]);
+      const seconds = parseInt(timeArray[1]);
+      setTimer(minutes * 60 + seconds);
+    }
   };
 
   const handlePause = () => {
@@ -39,9 +62,11 @@ const Home = () => {
 
   const handleReset = () => {
     clearInterval(countRef.current);
-    setIsActive(false);
     setIsPaused(false);
     setTimer(0);
+    if (isCountDown) {
+      timerInputRef.current.value = "";
+    }
   };
 
   return (
@@ -67,13 +92,17 @@ const Home = () => {
             role="application"
             className="flex flex-row gap-2 border-green-500 "
           >
-            {!isActive && !isPaused ? (
-              <button
-                className="border-2 p-2 border-gray-500 w-32 bg-sky-500 text-white"
-                onClick={handleStart}
-              >
-                Start
-              </button>
+            {!isPaused ? (
+              (timer > 1 || !isCountDown) && (
+                <button
+                  className={
+                    "border-2 p-2 border-gray-500 w-32 bg-sky-500 text-white"
+                  }
+                  onClick={handleStart}
+                >
+                  Start
+                </button>
+              )
             ) : isPaused ? (
               <button
                 className="border-2 p-2 border-gray-500 w-32"
@@ -89,13 +118,38 @@ const Home = () => {
                 Fortsetzen
               </button>
             )}
+            {timer > 0 && (
+              <button
+                className="border-2 p-2 border-gray-500 w-32 bg-red-500 text-white"
+                onClick={handleReset}
+              >
+                Zurücksetzen
+              </button>
+            )}
+          </section>
+
+          <section role="application" className="flex flex-row gap-2 h-auto">
             <button
-              className="border-2 p-2 border-gray-500 w-32 bg-red-500 text-white"
-              onClick={handleReset}
-              disabled={!isActive}
+              className={`border-2 p-2 border-gray-500 w-32 h-100 ${
+                isCountDown ? "bg-green-400" : "bg-slate-400"
+              } text-white`}
+              onClick={() => {
+                setIsCountDown(!isCountDown);
+                handleReset();
+              }}
             >
-              Zurücksetzen
+              {isCountDown ? "Stopuhr" : "Timer"}
             </button>
+            {isCountDown && (
+              <form className="w-100 ">
+                <input
+                  type="number"
+                  onChange={(e) => handleTimerInput(e)}
+                  className="border-2 w-32 h-12"
+                  ref={timerInputRef}
+                />
+              </form>
+            )}
           </section>
 
           <section role="application" className="flex flex-row gap-2">

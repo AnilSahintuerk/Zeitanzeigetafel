@@ -34,6 +34,10 @@ const Home = () => {
         setTimer((timer) => timer + 1);
       }
     }, 1000);
+
+    if (isCountDown) {
+      timerInputRef.current.value = "";
+    }
   };
 
   const handleTimerInput = (e) => {
@@ -80,10 +84,10 @@ const Home = () => {
         role="contentinfo"
         className="h-screen w-screen flex flex-col justify-center items-center"
       >
-        <p className="text-lg lg:text-5xl xl:text-5xl text-gray-700">
+        <p className="text-3xl lg:text-5xl xl:text-5xl text-gray-700">
           {halbzeit}. HZ
         </p>
-        <p className="text-2xl lg:text-9xl xl:text-9xl text-gray-700">
+        <p className="text-7xl lg:text-9xl xl:text-9xl text-gray-700">
           {formatTime()}
         </p>
 
@@ -141,11 +145,13 @@ const Home = () => {
               {isCountDown ? "Stopuhr" : "Timer"}
             </button>
             {isCountDown && (
-              <form className="w-100 ">
+              <form className="w-100 flex flex-col ">
+                <label>Zeit Einstellen:</label>
                 <input
                   type="number"
                   onChange={(e) => handleTimerInput(e)}
-                  className="border-2 w-32 h-12"
+                  aria-label="Zeit einstellen"
+                  className="border-2 border-black w-32"
                   ref={timerInputRef}
                 />
               </form>

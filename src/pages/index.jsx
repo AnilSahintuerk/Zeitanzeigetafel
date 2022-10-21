@@ -45,7 +45,7 @@ const Home = () => {
       setTimer(0);
     } else {
       const timeString = e.target.value.toString();
-      const timeArray = timeString.split(".");
+      const timeArray = timeString.split(":");
       const minutes = parseInt(timeArray[0]);
       const seconds = parseInt(timeArray[1]);
       setTimer(minutes * 60 + seconds);

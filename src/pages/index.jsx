@@ -45,7 +45,7 @@ const Home = () => {
       setTimer(0);
     } else {
       const timeString = e.target.value.toString();
-      const timeArray = timeString.split(".");
+      const timeArray = timeString.split(":");
       const minutes = parseInt(timeArray[0]);
       const seconds = parseInt(timeArray[1]);
       setTimer(minutes * 60 + seconds);
@@ -148,7 +148,6 @@ const Home = () => {
               <form className="w-100 flex flex-col ">
                 <label>Zeit Einstellen:</label>
                 <input
-                  type="number"
                   onChange={(e) => handleTimerInput(e)}
                   aria-label="Zeit einstellen"
                   className="border-2 border-black w-32"
